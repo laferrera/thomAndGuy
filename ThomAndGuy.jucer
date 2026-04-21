@@ -47,6 +47,12 @@
               file="Source/dsp/SubOctaveDivider.h"/>
         <FILE id="sdCpp" name="SubOctaveDivider.cpp" compile="1" resource="0"
               file="Source/dsp/SubOctaveDivider.cpp"/>
+        <FILE id="fiHdr" name="Filter.h" compile="0" resource="0"
+              file="Source/dsp/Filter.h"/>
+        <FILE id="svHdr" name="SvfFilter.h" compile="0" resource="0"
+              file="Source/dsp/SvfFilter.h"/>
+        <FILE id="svCpp" name="SvfFilter.cpp" compile="1" resource="0"
+              file="Source/dsp/SvfFilter.cpp"/>
       </GROUP>
       <GROUP id="tMgTst" name="Tests">
         <FILE id="trHdr" name="TestRunner.h" compile="0" resource="0"
@@ -59,6 +65,8 @@
               file="Source/Tests/WaveshaperChainTests.h"/>
         <FILE id="sdtHdr" name="SubOctaveDividerTests.h" compile="0" resource="0"
               file="Source/Tests/SubOctaveDividerTests.h"/>
+        <FILE id="svtHdr" name="SvfFilterTests.h" compile="0" resource="0"
+              file="Source/Tests/SvfFilterTests.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>

@@ -8,3 +8,4 @@
 #include "EnvelopeFollowerTests.h"
 #include "WaveshaperChainTests.h"
 #include "SubOctaveDividerTests.h"
+#include "SvfFilterTests.h"
