@@ -2,6 +2,12 @@
 
 #include <JuceHeader.h>
 #include "params/ParameterLayout.h"
+#include "dsp/InputConditioner.h"
+#include "dsp/EnvelopeFollower.h"
+#include "dsp/WaveshaperChain.h"
+#include "dsp/SvfFilter.h"
+#include "dsp/FormantBank.h"
+#include "params/ParameterIDs.h"
 
 class ThomAndGuyAudioProcessor : public juce::AudioProcessor
 {
@@ -34,6 +40,16 @@ public:
 
     juce::AudioProcessorValueTreeState apvts;
 
+    float getEnvelopeForUI() const noexcept { return envelopeForUI.load(); }
+
 private:
+    InputConditioner  inputConditioner;
+    EnvelopeFollower  envelopeFollower;
+    WaveshaperChain   waveshaperChain;
+    SvfFilter         envelopeFilter;
+    FormantBank       formantBank;
+
+    std::atomic<float> envelopeForUI { 0.0f };
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThomAndGuyAudioProcessor)
 };
