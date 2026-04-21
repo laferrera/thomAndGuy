@@ -31,10 +31,16 @@
       <GROUP id="tMgDsp" name="dsp">
         <FILE id="psHdr" name="ParamSmoothers.h" compile="0" resource="0"
               file="Source/dsp/ParamSmoothers.h"/>
+        <FILE id="icHdr" name="InputConditioner.h" compile="0" resource="0"
+              file="Source/dsp/InputConditioner.h"/>
+        <FILE id="icCpp" name="InputConditioner.cpp" compile="1" resource="0"
+              file="Source/dsp/InputConditioner.cpp"/>
       </GROUP>
       <GROUP id="tMgTst" name="Tests">
         <FILE id="trHdr" name="TestRunner.h" compile="0" resource="0"
               file="Source/Tests/TestRunner.h"/>
+        <FILE id="ictHdr" name="InputConditionerTests.h" compile="0" resource="0"
+              file="Source/Tests/InputConditionerTests.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>
