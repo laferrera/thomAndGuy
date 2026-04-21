@@ -81,6 +81,14 @@
               file="Source/ui/LookAndFeel.cpp"/>
         <FILE id="lfHdr" name="LookAndFeel.h" compile="0" resource="0"
               file="Source/ui/LookAndFeel.h"/>
+        <FILE id="mpCpp" name="MainPanel.cpp" compile="1" resource="0"
+              file="Source/ui/MainPanel.cpp"/>
+        <FILE id="mpHdr" name="MainPanel.h" compile="0" resource="0"
+              file="Source/ui/MainPanel.h"/>
+        <FILE id="kgCpp" name="KnobGroup.cpp" compile="1" resource="0"
+              file="Source/ui/KnobGroup.cpp"/>
+        <FILE id="kgHdr" name="KnobGroup.h" compile="0" resource="0"
+              file="Source/ui/KnobGroup.h"/>
       </GROUP>
       <GROUP id="tMgFnt" name="fonts">
         <FILE id="fReg"  name="ABCROM-Regular-Trial.otf" compile="0" resource="1"
