@@ -5,3 +5,4 @@
 // Add each new test header here as DSP blocks are added.
 
 #include "InputConditionerTests.h"
+#include "EnvelopeFollowerTests.h"
