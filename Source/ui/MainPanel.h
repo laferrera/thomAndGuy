@@ -4,6 +4,7 @@
 #include "KnobGroup.h"
 #include "ModeSwitch.h"
 #include "EnvelopeMeter.h"
+#include "PresetBar.h"
 #include "../params/ParameterIDs.h"
 
 class ThomAndGuyAudioProcessor;
@@ -45,6 +46,7 @@ private:
 
     ModeSwitch modeSwitch;
     EnvelopeMeter envelopeMeter;
+    PresetBar presetBar;
 
     // Envelope-mode cluster
     juce::Slider baseCutoffSlider, envAmountSlider;

@@ -11,6 +11,20 @@
               companyName="AmpersandAmpersand" version="0.1.0"
               cppLanguageStandard="17">
   <MAINGROUP id="tMgMain" name="ThomAndGuy">
+    <GROUP id="tMgPre" name="Presets">
+      <FILE id="pHAA"  name="HAARhythm.xml"     compile="0" resource="1"
+            file="Presets/HAARhythm.xml"/>
+      <FILE id="pCF"   name="CleanFunk.xml"     compile="0" resource="1"
+            file="Presets/CleanFunk.xml"/>
+      <FILE id="pVS"   name="VowelSweep.xml"    compile="0" resource="1"
+            file="Presets/VowelSweep.xml"/>
+      <FILE id="pRV"   name="RobotVoice.xml"    compile="0" resource="1"
+            file="Presets/RobotVoice.xml"/>
+      <FILE id="pSS"   name="SubSynth.xml"      compile="0" resource="1"
+            file="Presets/SubSynth.xml"/>
+      <FILE id="pSAW"  name="SubtleAutoWah.xml" compile="0" resource="1"
+            file="Presets/SubtleAutoWah.xml"/>
+    </GROUP>
     <GROUP id="tMgSrc" name="Source">
       <FILE id="ppCpp" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
@@ -97,6 +111,16 @@
               file="Source/ui/EnvelopeMeter.cpp"/>
         <FILE id="emHdr" name="EnvelopeMeter.h" compile="0" resource="0"
               file="Source/ui/EnvelopeMeter.h"/>
+        <FILE id="pbCpp" name="PresetBar.cpp" compile="1" resource="0"
+              file="Source/ui/PresetBar.cpp"/>
+        <FILE id="pbHdr" name="PresetBar.h" compile="0" resource="0"
+              file="Source/ui/PresetBar.h"/>
+      </GROUP>
+      <GROUP id="tMgFac" name="presets">
+        <FILE id="fcCpp" name="Factory.cpp" compile="1" resource="0"
+              file="Source/presets/Factory.cpp"/>
+        <FILE id="fcHdr" name="Factory.h" compile="0" resource="0"
+              file="Source/presets/Factory.h"/>
       </GROUP>
       <GROUP id="tMgFnt" name="fonts">
         <FILE id="fReg"  name="ABCROM-Regular-Trial.otf" compile="0" resource="1"

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PARAMETERS>
+  <PARAM id="inputGain"    value="0.0"/>
+  <PARAM id="sensitivity"  value="10.0"/>
+  <PARAM id="attack"       value="5.0"/>
+  <PARAM id="range"        value="0.3"/>
+  <PARAM id="decay"        value="250.0"/>
+  <PARAM id="drive"        value="2.0"/>
+  <PARAM id="morph"        value="0.1"/>
+  <PARAM id="subBlend"     value="0.0"/>
+  <PARAM id="filterMode"   value="0"/>
+  <PARAM id="resonance"    value="3.0"/>
+  <PARAM id="baseCutoff"   value="500.0"/>
+  <PARAM id="envAmount"    value="1.5"/>
+  <PARAM id="filterType"   value="1"/>
+  <PARAM id="vowelA"       value="4"/>
+  <PARAM id="vowelB"       value="0"/>
+  <PARAM id="stretchCurve" value="1"/>
+  <PARAM id="formantDepth" value="1.0"/>
+  <PARAM id="wetDry"       value="1.0"/>
+  <PARAM id="outputLevel"  value="0.0"/>
+</PARAMETERS>

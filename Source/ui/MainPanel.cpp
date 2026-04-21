@@ -5,7 +5,8 @@
 MainPanel::MainPanel (ThomAndGuyAudioProcessor& p)
     : processor (p),
       modeSwitch (p.apvts, ParamIDs::filterMode, "Envelope", "Formant"),
-      envelopeMeter (p)
+      envelopeMeter (p),
+      presetBar (p)
 {
     auto& apvts = p.apvts;
 
@@ -68,6 +69,7 @@ MainPanel::MainPanel (ThomAndGuyAudioProcessor& p)
     addAndMakeVisible (envelopeModeGroup);
     addAndMakeVisible (formantModeGroup);
     addAndMakeVisible (envelopeMeter);
+    addAndMakeVisible (presetBar);
 
     modeSwitch.onChange = [this] (int ix) { applyFilterMode (ix); };
 
@@ -108,7 +110,9 @@ void MainPanel::resized()
 {
     auto area = getLocalBounds();
     auto header = area.removeFromTop (52).reduced (16, 12);
-    envelopeMeter.setBounds (header.removeFromRight (header.getWidth() / 2));
+    envelopeMeter.setBounds (header.removeFromRight (header.getWidth() / 3));
+    header.removeFromRight (12);
+    presetBar.setBounds (header.removeFromRight (150));
     area.reduce (16, 12);
 
     // Top row: Input | Envelope Feel | Drive
