@@ -28,6 +28,10 @@
         <FILE id="plHdr" name="ParameterLayout.h" compile="0" resource="0"
               file="Source/params/ParameterLayout.h"/>
       </GROUP>
+      <GROUP id="tMgDsp" name="dsp">
+        <FILE id="psHdr" name="ParamSmoothers.h" compile="0" resource="0"
+              file="Source/dsp/ParamSmoothers.h"/>
+      </GROUP>
       <GROUP id="tMgTst" name="Tests">
         <FILE id="trHdr" name="TestRunner.h" compile="0" resource="0"
               file="Source/Tests/TestRunner.h"/>
