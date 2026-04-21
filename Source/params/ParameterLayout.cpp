@@ -10,9 +10,7 @@ namespace
     NR dbRange (float lo, float hi) { return NR (lo, hi, 0.01f); }
     NR logRange (float lo, float hi, float skew)
     {
-        NR r (lo, hi, 0.0001f);
-        r.setSkewForCentre (lo + (hi - lo) * skew);
-        return r;
+        return NR (lo, hi, 0.01f, skew);
     }
 }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <JuceHeader.h>
+
 namespace ParamIDs
 {
     inline const juce::String inputGain    = "inputGain";
