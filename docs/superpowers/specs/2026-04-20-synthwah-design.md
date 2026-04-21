@@ -175,35 +175,65 @@ Total: 17 parameters; ~12 visible at a time (mode-specific params swap in/out).
 
 ## 5. UI Design
 
-**Style:** pedal-inspired but not skeuomorphic. Dark background, single accent color (muted amber or pale green), no faux chassis screws, no simulated LEDs.
+The plugin UI inherits the **AmpersandAmpersand (`&&`) design system** defined in `../PhysicalModelTest/DESIGN.md`. That system is the authoritative visual reference; this section documents only the plugin-specific applications of it.
 
-**Layout sketch (~600 × 360 px, resizable):**
+### Design System Inheritance
+
+- **Port `AmpersandLookAndFeel.cpp/.h`** from `../PhysicalModelTest/Source/` as the starting point for this plugin's JUCE `LookAndFeel`. Keep it in `Source/ui/LookAndFeel.cpp/.h`. Extend only if the plugin needs components the sibling didn't.
+- **Reuse the ABC Rom and ABC Rom Mono font families** from `../PhysicalModelTest/ABC ROM/` and `.../ABC ROM Mono/`. Bundle the required weights (Regular, Medium, Bold, Mono Regular, Mono Bold) as binary resources in the `.jucer`.
+- Follow the system's color tokens, spacing scale (4px base grid), 0px border-radius rule, and typography pairing (ABC Rom for labels, ABC Rom Mono for numerical values).
+
+### Semantic Mapping (plugin-specific)
+
+| UI Element | Design System Role | Color / Treatment |
+|---|---|---|
+| Page background | Ground | `#000000` |
+| Header bar | Panel | `#1A1A1A` |
+| Knob group panels | Card | `#333333`, 1px border `#4D4D4D` |
+| Inactive knob / control | Node resting | `#666666` |
+| Knob hover / focus | Interactive | `#0093D3` (cyan) |
+| Mode switch selected state | Selected | `#CC016B` (magenta) |
+| **Envelope meter** | **Live signal** | `#FFF10D` (yellow) + `0 0 6px #FFF10D` LED glow + 1200 ms pulse when input is present |
+| Parameter value readouts | Mono label | ABC Rom Mono 12px weight 400, `#FFFEFE` |
+| Knob labels | UI label | ABC Rom 12px weight 400 uppercase, `#666666`, 0.20px tracking |
+| Plugin wordmark | Display | ABC Rom Mono 20px weight 700, `#FFFEFE` |
+| Section dividers | Border subtle | 1px solid `#1A1A1A` |
+
+The envelope meter's yellow LED treatment is the centerpiece of the UI — it's the literal `env(t)` signal, so using yellow is semantically correct per the design system's "yellow = live signal, yellow glow = functional shadow" rule. This is the one place where the design system's rarely-used LED shadow is warranted.
+
+### Layout Sketch (~600 × 360 px, resizable)
 
 ```
-┌─ THOM & GUY ─────────────────────────────────┐
-│                                               │
-│  INPUT       ENVELOPE FEEL      DRIVE SECTION │
-│  ( Gain )    (Sens)(Range)(Decay) (Drv)(Morph)(Sub) │
-│                                               │
-│  ─────────────────────────────────────────── │
-│                                               │
-│  FILTER MODE:  [ ● Envelope    ○ Formant ]   │
-│                                               │
-│  (mode-specific knobs here — swap in/out)    │
-│                                               │
-│  ─────────────────────────────────────────── │
-│                                               │
-│  OUTPUT      (Wet/Dry)  (Level)              │
-│                                               │
-└───────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│  && THOM & GUY    [envelope meter ▓▓▓▓▓▓░░░░]       │  header: #1A1A1A
+│                                                     │
+│  ┌──INPUT──┐ ┌────ENVELOPE FEEL────┐ ┌──DRIVE──┐   │  cards: #333
+│  │ (Gain)  │ │ (Sens) (Range) (Dec) │ │ (Drv)   │   │
+│  └─────────┘ └──────────────────────┘ │ (Morph) │   │
+│                                        │ (Sub)   │   │
+│                                        └─────────┘   │
+│  ─────────────────────────────────────────────────  │
+│                                                     │
+│  FILTER MODE:  [ ● ENVELOPE ]  [ ○ FORMANT ]       │  mode switch
+│                                                     │
+│  ┌──────── mode-specific knob cluster ────────┐   │
+│  │ (Base Cutoff) (Env Amount) (Reso) [LP/BP] │   │
+│  └──────────────────────────────────────────────┘   │
+│                                                     │
+│  ─────────────────────────────────────────────────  │
+│                                                     │
+│  OUTPUT:  (Wet/Dry)  (Level)                        │
+│                                                     │
+└─────────────────────────────────────────────────────┘
 ```
 
-**Key elements:**
+### Key Elements
 
-- **Envelope meter** in the header bar: real-time `env(t)` as a horizontal level bar. Makes the "touch responsive" feel visible, which is essential for dialing Sensitivity and Range.
-- **Mode switch** visually prominent; its state determines which knob cluster appears below.
-- Knobs are standard rotary; values shown as text on hover/drag.
-- Resizable via `setResizable` + `ResizableCornerComponent`, with component-level scaling.
+- **Envelope meter** in the header bar: a horizontal bar showing real-time `env(t)`, rendered in `#FFF10D` with the LED glow. This makes the "touch responsive" feel visible and is essential for dialing Sensitivity and Range by eye.
+- **Mode switch** uses the design system's selected-state magenta — the selected mode's label is white on `#CC016B`; the unselected mode is `#666` on transparent. Its state reshapes the knob cluster below.
+- **Knobs** use the system's specialized knob treatment: 2px track `#333333`, 16×16px square thumb (`#0093D3` default, `#CC016B` when dragged), value readout in ABC Rom Mono 12px right-aligned. Value turns `#FFF10D` when the parameter is actively being modulated by the envelope (e.g., the Base Cutoff readout pulses yellow during an envelope sweep).
+- **Resizable** via `setResizable` + `ResizableCornerComponent`. Use JUCE's component-scale mechanism so the 4px grid holds at any size.
+- **No shadows anywhere** except the yellow LED glow on the envelope meter. No rounded corners anywhere.
 
 ### Presets
 
@@ -225,6 +255,20 @@ Presets stored as XML in a `Presets/` folder alongside the plugin, loaded via a 
 - **Formats:** AU, VST3, Standalone. **VST3 is the primary target** because Reason (the primary test DAW) accepts VST3 only.
 - **Platform:** macOS universal binary (arm64 + x86_64). Windows not tested in v1.
 - **Build system:** Projucer + Xcode via `build.sh`, matching the conventions of the sibling `PhysicalModelTest/` project.
+
+### `.jucer` Configuration (key flags)
+
+This plugin is an **audio effect**, not a synth instrument. Configure the `.jucer` accordingly — the sibling `CelloModel.jucer` uses synth-oriented flags that **must not** be copied verbatim:
+
+| Field | Value | Note |
+|---|---|---|
+| `projectType` | `audioplug` | — |
+| `pluginIsSynth` | `0` | effect, not instrument |
+| `pluginWantsMidiIn` | `0` | no MIDI |
+| `pluginProducesMidiOut` | `0` | — |
+| `pluginAUMainType` | `'aufx'` | effect unit |
+| `pluginVST3Category` | `Fx\|Filter` | filter-family effect |
+| `pluginCharacteristicsValue` | *(unset)* | no `pluginIsSynth` characteristic |
 
 ### Repository Layout
 
@@ -256,10 +300,17 @@ thomAndGuy/
 │   ├── ui/
 │   │   ├── MainPanel.cpp/.h        # top-level editor layout
 │   │   ├── KnobGroup.cpp/.h        # reusable labeled-knob cluster
-│   │   ├── EnvelopeMeter.cpp/.h    # real-time env(t) visualizer
+│   │   ├── EnvelopeMeter.cpp/.h    # real-time env(t) visualizer (yellow LED)
 │   │   ├── ModeSwitch.cpp/.h       # envelope ↔ formant
 │   │   ├── PresetBar.cpp/.h        # preset dropdown + save/load
-│   │   └── LookAndFeel.cpp/.h      # plugin-wide styling
+│   │   └── LookAndFeel.cpp/.h      # ported from ../PhysicalModelTest/Source/AmpersandLookAndFeel
+│   │
+│   ├── fonts/                      # ABC Rom + ABC Rom Mono (from sibling project)
+│   │   ├── ABCRom-Regular.otf
+│   │   ├── ABCRom-Medium.otf
+│   │   ├── ABCRom-Bold.otf
+│   │   ├── ABCRomMono-Regular.otf
+│   │   └── ABCRomMono-Bold.otf
 │   │
 │   ├── params/
 │   │   ├── ParameterIDs.h          # string constants for APVTS
@@ -349,6 +400,9 @@ For any implementation work that touches audio, completion requires:
 
 ## 8. Open Items
 
-- **Primary test DAW: Reason** (VST3). Secondary DAWs for compatibility sanity-checks are not planned for v1.
-- **Accent color** for the UI (muted amber vs. pale green) is a visual preference to be finalized during implementation of the `LookAndFeel`.
-- **Plugin display name / manufacturer string / plugin code** for the `.jucer` file need to be chosen. Suggested: display name "Thom & Guy," manufacturer "FGSake" (or user's preferred), 4-char plugin code TBD.
+- **Primary test DAW:** Reason (VST3). Secondary DAWs for compatibility sanity-checks are not planned for v1.
+- **UI style:** resolved — inherit the AmpersandAmpersand (`&&`) design system from `../PhysicalModelTest/DESIGN.md`. No separate accent-color decision to make.
+- **`.jucer` metadata still to be set:**
+  - Display / project name: suggested **"Thom & Guy"**.
+  - Company / manufacturer string: not set in the sibling project either; needs a user decision (e.g., "AmpersandAmpersand," the user's org, or a personal string).
+  - 4-char plugin code: needs to be unique across the user's plugins. Suggested **`ThGy`**, to be confirmed against any other plugins the user has shipped.
