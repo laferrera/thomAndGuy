@@ -4,7 +4,8 @@
 ThomAndGuyAudioProcessor::ThomAndGuyAudioProcessor()
     : AudioProcessor (BusesProperties()
                           .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                          .withOutput ("Output", juce::AudioChannelSet::stereo(), true))
+                          .withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
+      apvts (*this, nullptr, "PARAMETERS", ParameterLayout::create())
 {
 }
 
@@ -31,8 +32,19 @@ juce::AudioProcessorEditor* ThomAndGuyAudioProcessor::createEditor()
     return new ThomAndGuyAudioProcessorEditor (*this);
 }
 
-void ThomAndGuyAudioProcessor::getStateInformation (juce::MemoryBlock&) {}
-void ThomAndGuyAudioProcessor::setStateInformation (const void*, int) {}
+void ThomAndGuyAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+{
+    const auto state = apvts.copyState();
+    std::unique_ptr<juce::XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
+}
+
+void ThomAndGuyAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+{
+    std::unique_ptr<juce::XmlElement> xml (getXmlFromBinary (data, sizeInBytes));
+    if (xml != nullptr && xml->hasTagName (apvts.state.getType()))
+        apvts.replaceState (juce::ValueTree::fromXml (*xml));
+}
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {

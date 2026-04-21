@@ -20,6 +20,14 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="peHdr" name="PluginEditor.h" compile="0" resource="0"
             file="Source/PluginEditor.h"/>
+      <GROUP id="tMgPar" name="params">
+        <FILE id="piHdr" name="ParameterIDs.h" compile="0" resource="0"
+              file="Source/params/ParameterIDs.h"/>
+        <FILE id="plCpp" name="ParameterLayout.cpp" compile="1" resource="0"
+              file="Source/params/ParameterLayout.cpp"/>
+        <FILE id="plHdr" name="ParameterLayout.h" compile="0" resource="0"
+              file="Source/params/ParameterLayout.h"/>
+      </GROUP>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
