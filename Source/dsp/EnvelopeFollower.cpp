@@ -63,7 +63,7 @@ float EnvelopeFollower::process (float input)
 
     float env = std::max (fastState, slowState);
 
-    const float shaped = env + range * (std::tanh (env * 1.5f) / 1.5f - env);
+    const float shaped = env + range * (std::tanh (env * 1.5f) / std::tanh (1.5f) - env);
 
     const float clamped = juce::jlimit (0.0f, 1.0f, shaped);
     outState += outCoeff * (clamped - outState);
