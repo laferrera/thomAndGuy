@@ -3,6 +3,7 @@
 #include <JuceHeader.h>
 #include "KnobGroup.h"
 #include "ModeSwitch.h"
+#include "EnvelopeMeter.h"
 #include "../params/ParameterIDs.h"
 
 class ThomAndGuyAudioProcessor;
@@ -43,6 +44,7 @@ private:
     KnobGroup outputGroup     { "Output" };
 
     ModeSwitch modeSwitch;
+    EnvelopeMeter envelopeMeter;
 
     // Envelope-mode cluster
     juce::Slider baseCutoffSlider, envAmountSlider;

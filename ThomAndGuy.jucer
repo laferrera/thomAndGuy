@@ -93,6 +93,10 @@
               file="Source/ui/ModeSwitch.cpp"/>
         <FILE id="msHdr" name="ModeSwitch.h" compile="0" resource="0"
               file="Source/ui/ModeSwitch.h"/>
+        <FILE id="emCpp" name="EnvelopeMeter.cpp" compile="1" resource="0"
+              file="Source/ui/EnvelopeMeter.cpp"/>
+        <FILE id="emHdr" name="EnvelopeMeter.h" compile="0" resource="0"
+              file="Source/ui/EnvelopeMeter.h"/>
       </GROUP>
       <GROUP id="tMgFnt" name="fonts">
         <FILE id="fReg"  name="ABCROM-Regular-Trial.otf" compile="0" resource="1"
