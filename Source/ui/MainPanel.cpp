@@ -18,49 +18,32 @@ MainPanel::MainPanel (ThomAndGuyAudioProcessor& p)
 {
     auto& apvts = p.apvts;
 
-    inputGroup.addSlider (inputGainSlider, "Gain");
-    inputGainAtt = std::make_unique<Attachment> (apvts, ParamIDs::inputGain, inputGainSlider);
-    inputGainSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::inputGain));
-    inputGainSlider.setParamLabel ("Input Gain");
+    auto addKnob = [&apvts] (KnobGroup& group,
+                             ValueSlider& slider,
+                             std::unique_ptr<Attachment>& att,
+                             const juce::String& paramID,
+                             const juce::String& shortLabel,
+                             const juce::String& tooltipLabel)
+    {
+        group.addSlider (slider, shortLabel);
+        att = std::make_unique<Attachment> (apvts, paramID, slider);
+        slider.setDoubleClickReturnValue (true, getParamDefault (apvts, paramID));
+        slider.setParamLabel (tooltipLabel);
+    };
 
-    envelopeGroup.addSlider (sensitivitySlider, "Sens");
-    sensitivityAtt = std::make_unique<Attachment> (apvts, ParamIDs::sensitivity, sensitivitySlider);
-    sensitivitySlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::sensitivity));
-    sensitivitySlider.setParamLabel ("Sensitivity");
-    envelopeGroup.addSlider (attackSlider, "Atk");
-    attackAtt = std::make_unique<Attachment> (apvts, ParamIDs::attack, attackSlider);
-    attackSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::attack));
-    attackSlider.setParamLabel ("Attack");
-    envelopeGroup.addSlider (rangeSlider, "Range");
-    rangeAtt = std::make_unique<Attachment> (apvts, ParamIDs::range, rangeSlider);
-    rangeSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::range));
-    rangeSlider.setParamLabel ("Range");
-    envelopeGroup.addSlider (decaySlider, "Decay");
-    decayAtt = std::make_unique<Attachment> (apvts, ParamIDs::decay, decaySlider);
-    decaySlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::decay));
-    decaySlider.setParamLabel ("Decay");
+    addKnob (inputGroup,    inputGainSlider,    inputGainAtt,    ParamIDs::inputGain,    "Gain",    "Input Gain");
 
-    driveGroup.addSlider (driveSlider, "Drive");
-    driveAtt = std::make_unique<Attachment> (apvts, ParamIDs::drive, driveSlider);
-    driveSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::drive));
-    driveSlider.setParamLabel ("Drive");
-    driveGroup.addSlider (morphSlider, "Morph");
-    morphAtt = std::make_unique<Attachment> (apvts, ParamIDs::morph, morphSlider);
-    morphSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::morph));
-    morphSlider.setParamLabel ("Morph");
-    driveGroup.addSlider (subBlendSlider, "Sub");
-    subBlendAtt = std::make_unique<Attachment> (apvts, ParamIDs::subBlend, subBlendSlider);
-    subBlendSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::subBlend));
-    subBlendSlider.setParamLabel ("Sub Blend");
+    addKnob (envelopeGroup, sensitivitySlider,  sensitivityAtt,  ParamIDs::sensitivity,  "Sens",    "Sensitivity");
+    addKnob (envelopeGroup, attackSlider,       attackAtt,       ParamIDs::attack,       "Atk",     "Attack");
+    addKnob (envelopeGroup, rangeSlider,        rangeAtt,        ParamIDs::range,        "Range",   "Range");
+    addKnob (envelopeGroup, decaySlider,        decayAtt,        ParamIDs::decay,        "Decay",   "Decay");
 
-    outputGroup.addSlider (wetDrySlider, "Wet/Dry");
-    wetDryAtt = std::make_unique<Attachment> (apvts, ParamIDs::wetDry, wetDrySlider);
-    wetDrySlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::wetDry));
-    wetDrySlider.setParamLabel ("Wet/Dry");
-    outputGroup.addSlider (outputLevelSlider, "Level");
-    outputLevelAtt = std::make_unique<Attachment> (apvts, ParamIDs::outputLevel, outputLevelSlider);
-    outputLevelSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::outputLevel));
-    outputLevelSlider.setParamLabel ("Output Level");
+    addKnob (driveGroup,    driveSlider,        driveAtt,        ParamIDs::drive,        "Drive",   "Drive");
+    addKnob (driveGroup,    morphSlider,        morphAtt,        ParamIDs::morph,        "Morph",   "Morph");
+    addKnob (driveGroup,    subBlendSlider,     subBlendAtt,     ParamIDs::subBlend,     "Sub",     "Sub Blend");
+
+    addKnob (outputGroup,   wetDrySlider,       wetDryAtt,       ParamIDs::wetDry,       "Wet/Dry", "Wet/Dry");
+    addKnob (outputGroup,   outputLevelSlider,  outputLevelAtt,  ParamIDs::outputLevel,  "Level",   "Output Level");
 
     addAndMakeVisible (inputGroup);
     addAndMakeVisible (envelopeGroup);
@@ -68,14 +51,8 @@ MainPanel::MainPanel (ThomAndGuyAudioProcessor& p)
     addAndMakeVisible (outputGroup);
 
     // Envelope-mode cluster
-    envelopeModeGroup.addSlider (baseCutoffSlider, "Cutoff");
-    baseCutoffAtt = std::make_unique<Attachment> (apvts, ParamIDs::baseCutoff, baseCutoffSlider);
-    baseCutoffSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::baseCutoff));
-    baseCutoffSlider.setParamLabel ("Base Cutoff");
-    envelopeModeGroup.addSlider (envAmountSlider, "Env Amt");
-    envAmountAtt = std::make_unique<Attachment> (apvts, ParamIDs::envAmount, envAmountSlider);
-    envAmountSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::envAmount));
-    envAmountSlider.setParamLabel ("Env Amount");
+    addKnob (envelopeModeGroup, baseCutoffSlider, baseCutoffAtt, ParamIDs::baseCutoff, "Cutoff",  "Base Cutoff");
+    addKnob (envelopeModeGroup, envAmountSlider,  envAmountAtt,  ParamIDs::envAmount,  "Env Amt", "Env Amount");
     filterTypeBox.addItemList (ParamIDs::filterTypeChoices, 1);
     filterTypeAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
         apvts, ParamIDs::filterType, filterTypeBox);
@@ -91,10 +68,7 @@ MainPanel::MainPanel (ThomAndGuyAudioProcessor& p)
         apvts, ParamIDs::vowelB, vowelBBox);
     stretchCurveAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
         apvts, ParamIDs::stretchCurve, stretchCurveBox);
-    formantModeGroup.addSlider (formantDepthSlider, "Depth");
-    formantDepthAtt = std::make_unique<Attachment> (apvts, ParamIDs::formantDepth, formantDepthSlider);
-    formantDepthSlider.setDoubleClickReturnValue (true, getParamDefault (apvts, ParamIDs::formantDepth));
-    formantDepthSlider.setParamLabel ("Formant Depth");
+    addKnob (formantModeGroup, formantDepthSlider, formantDepthAtt, ParamIDs::formantDepth, "Depth", "Formant Depth");
     formantModeGroup.addAndMakeVisible (vowelABox);
     formantModeGroup.addAndMakeVisible (vowelBBox);
     formantModeGroup.addAndMakeVisible (stretchCurveBox);
