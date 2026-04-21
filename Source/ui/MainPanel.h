@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 #include "KnobGroup.h"
+#include "../params/ParameterIDs.h"
 
 class ThomAndGuyAudioProcessor;
 
@@ -15,7 +16,25 @@ public:
     void resized ()                override;
 
 private:
+    using Attachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+
     ThomAndGuyAudioProcessor& processor;
+
+    // Input
+    juce::Slider inputGainSlider;
+    std::unique_ptr<Attachment> inputGainAtt;
+
+    // Envelope Feel
+    juce::Slider sensitivitySlider, attackSlider, rangeSlider, decaySlider;
+    std::unique_ptr<Attachment> sensitivityAtt, attackAtt, rangeAtt, decayAtt;
+
+    // Drive
+    juce::Slider driveSlider, morphSlider, subBlendSlider;
+    std::unique_ptr<Attachment> driveAtt, morphAtt, subBlendAtt;
+
+    // Output
+    juce::Slider wetDrySlider, outputLevelSlider;
+    std::unique_ptr<Attachment> wetDryAtt, outputLevelAtt;
 
     KnobGroup inputGroup      { "Input" };
     KnobGroup envelopeGroup   { "Envelope Feel" };
