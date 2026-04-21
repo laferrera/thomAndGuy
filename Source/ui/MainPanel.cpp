@@ -31,6 +31,16 @@ MainPanel::MainPanel (ThomAndGuyAudioProcessor& p)
         slider.setParamLabel (tooltipLabel);
     };
 
+    using ComboAtt = juce::AudioProcessorValueTreeState::ComboBoxAttachment;
+    auto attachCombo = [&apvts] (juce::ComboBox& box,
+                                 std::unique_ptr<ComboAtt>& att,
+                                 const juce::StringArray& choices,
+                                 const juce::String& paramID)
+    {
+        box.addItemList (choices, 1);
+        att = std::make_unique<ComboAtt> (apvts, paramID, box);
+    };
+
     addKnob (inputGroup,    inputGainSlider,    inputGainAtt,    ParamIDs::inputGain,    "Gain",    "Input Gain");
 
     addKnob (envelopeGroup, sensitivitySlider,  sensitivityAtt,  ParamIDs::sensitivity,  "Sens",    "Sensitivity");
@@ -53,21 +63,13 @@ MainPanel::MainPanel (ThomAndGuyAudioProcessor& p)
     // Envelope-mode cluster
     addKnob (envelopeModeGroup, baseCutoffSlider, baseCutoffAtt, ParamIDs::baseCutoff, "Cutoff",  "Base Cutoff");
     addKnob (envelopeModeGroup, envAmountSlider,  envAmountAtt,  ParamIDs::envAmount,  "Env Amt", "Env Amount");
-    filterTypeBox.addItemList (ParamIDs::filterTypeChoices, 1);
-    filterTypeAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
-        apvts, ParamIDs::filterType, filterTypeBox);
+    attachCombo (filterTypeBox, filterTypeAtt, ParamIDs::filterTypeChoices, ParamIDs::filterType);
     envelopeModeGroup.addAndMakeVisible (filterTypeBox);
 
     // Formant-mode cluster
-    vowelABox.addItemList (ParamIDs::vowelChoices, 1);
-    vowelBBox.addItemList (ParamIDs::vowelChoices, 1);
-    stretchCurveBox.addItemList (ParamIDs::stretchCurveChoices, 1);
-    vowelAAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
-        apvts, ParamIDs::vowelA, vowelABox);
-    vowelBAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
-        apvts, ParamIDs::vowelB, vowelBBox);
-    stretchCurveAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
-        apvts, ParamIDs::stretchCurve, stretchCurveBox);
+    attachCombo (vowelABox,       vowelAAtt,       ParamIDs::vowelChoices,        ParamIDs::vowelA);
+    attachCombo (vowelBBox,       vowelBAtt,       ParamIDs::vowelChoices,        ParamIDs::vowelB);
+    attachCombo (stretchCurveBox, stretchCurveAtt, ParamIDs::stretchCurveChoices, ParamIDs::stretchCurve);
     addKnob (formantModeGroup, formantDepthSlider, formantDepthAtt, ParamIDs::formantDepth, "Depth", "Formant Depth");
     formantModeGroup.addAndMakeVisible (vowelABox);
     formantModeGroup.addAndMakeVisible (vowelBBox);
