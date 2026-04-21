@@ -1,5 +1,6 @@
 .DS_Store
 Builds/
 JuceLibraryCode/
+*.xcodeproj/
+*.xcworkspace/
 .remember/tmp/
-*.xcworkspace/xcuserdata/
