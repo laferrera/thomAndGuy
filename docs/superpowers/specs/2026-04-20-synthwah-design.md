@@ -15,6 +15,19 @@ The plugin emulates the *family* of effects the Digitech pedal produces without 
 2. **Formant filter mode** — two vowel states with envelope-driven morph. Secondary sound.
 3. **Envelope feel** — fast-but-not-instant attack, musical decay, touch-responsive sensitivity curve. Cuts across both modes.
 
+### Pedal Mode Coverage (reference)
+
+The Digitech Synth Wah has seven modes selected via its Type knob. This plugin covers four of them, subsumed into two modes:
+
+| Pedal mode | Plugin equivalent |
+|---|---|
+| 1. Env Up | Envelope Mode + positive Env Amount |
+| 2. Env Down | Envelope Mode + negative Env Amount |
+| 5. Filter 1 (Synth Talk) | Formant Mode, vowel A → vowel B |
+| 6. Filter 2 (Synth Talk, inverse) | Formant Mode, vowel B → vowel A (swap the two vowels) |
+
+The two Envelope directions collapse into one mode with a signed Env Amount knob, and the two Filter directions collapse into one mode with user-selected vowel endpoints. The plugin is more flexible than the pedal in both cases.
+
 ### Explicit Non-Goals
 
 - No polyphony. The plugin is monophonic end-to-end.
@@ -23,6 +36,13 @@ The plugin emulates the *family* of effects the Digitech pedal produces without 
 - No circuit-level analog modeling (no component-level emulation of the Digitech pedal).
 - No AAX/Pro Tools support in v1. AU, VST3, Standalone only.
 - No Windows testing in v1. macOS universal binary only.
+
+### Deferred Pedal Modes (not in v1)
+
+Documented so future work has a clean starting point:
+
+- **Synth 1 / Synth 2** (pedal modes 3, 4) — monophonic synth tone generator with opening/closing filter envelope. These modes require an internal oscillator and a pitch tracker, both of which we deliberately omitted to keep v1 scoped. Can be added as a new `Filter Mode` option later without disturbing the envelope-mode or formant-mode paths.
+- **Auto Wah** (pedal mode 7) — LFO-driven wah sweep, decoupled from input envelope. Out of scope because the plugin's identity is "touch response." If added later, it would live as a third `Filter Mode` with an LFO replacing the envelope follower as the cutoff driver.
 
 ## 2. Signal Flow Architecture
 
@@ -81,16 +101,17 @@ Feel-defining block. Architecture:
 
 1. **Rectify:** `|x|` per sample.
 2. **Parallel fast + slow peak detectors, output = max of the two.**
-   - Fast: attack ~3–5 ms, release ~15 ms. Captures transient bite.
-   - Slow: attack ~10–15 ms, release set by the **Decay** knob (100–800 ms, default 300 ms). Gives musical sustain.
+   - Fast: attack set by the **Attack** knob (1–30 ms, default 4 ms); release ~15 ms. Captures transient bite.
+   - Slow: attack ~10–15 ms; release set by the **Decay** knob (100–800 ms, default 300 ms). Gives musical sustain.
    - The `max()` topology is the trick behind "fast but not instant": the fast detector lets pluck transients through immediately, the slow detector extends them into a musical tail.
+   - The Attack knob matches the semantics of the pedal's "Synth Attack" / "Filter Attack" control — how quickly the filter opens under a pick.
 3. **Sensitivity curve** applied before output:
-   - **Sensitivity** (0–24 dB): input trim into the follower.
+   - **Sensitivity** (0–24 dB): input trim into the follower. Analogous to the pedal's "Trigger Sensitivity."
    - **Range** (0–1): shapes the top of the curve between linear and exponentially compressed, giving a "touch responsive" knee.
 4. Output clamped to `[0, 1]`, log-smoothed at ~2 ms to eliminate zipper noise.
 
-**Exposed controls:** Sensitivity, Range, Decay.
-**Hidden (fixed voicing):** fast/slow attack times, max() topology, smoothing constants.
+**Exposed controls:** Sensitivity, Attack, Decay, Range.
+**Hidden (fixed voicing):** fast detector's release, slow detector's attack, max() topology, smoothing constants.
 
 ### 3.3 Waveshaper Chain
 
@@ -124,11 +145,15 @@ One concrete `SvfFilter` class; multiple instances depending on mode.
 
 - Two formant "banks" A and B. Each bank = **3 parallel bandpass SVFs** tuned to F1/F2/F3 for one vowel.
 - Vowel palette: **AH, EH, IH, OH, OO** (5 vowels). F1/F2/F3 values from a static lookup table in `FormantTables.h`.
-- Crossfade between bank A and bank B driven by `stretch_curve(env(t))`.
+- Crossfade between bank A and bank B is:
+  ```
+  morph = formantDepth * stretch_curve(env(t))
+  ```
+  where `formantDepth` (0–1) is the user-facing **Depth** knob — analogous to the pedal's "Freq Envelope" control. Depth = 1 sweeps fully from vowel A to vowel B; Depth = 0.3 only partially morphs toward B.
 - `stretch_curve` is a user-selected shape from three options: **Exp, Linear, Log**. Not a continuous knob — discrete dropdown.
 - Resonance (Q) shared with envelope mode; moderate values (2–6) keep vowels intelligible.
 
-**User controls:** Vowel A, Vowel B, Stretch Curve, Resonance.
+**User controls:** Vowel A, Vowel B, Stretch Curve, Depth, Resonance.
 
 #### Coefficient Update Rate
 
@@ -149,29 +174,31 @@ All parameters registered through `AudioProcessorValueTreeState` for automation,
 | **Input** | | | | | |
 | 1 | Input Gain | −12 … +12 dB | 0 dB | linear | |
 | **Envelope Follower** | | | | | |
-| 2 | Sensitivity | 0 … 24 dB | 12 dB | linear | trim into follower |
-| 3 | Range | 0 … 1 | 0.5 | linear | lin→exp curve knee |
-| 4 | Decay | 100 … 800 ms | 300 ms | log (0.3) | slow-detector release |
+| 2 | Sensitivity | 0 … 24 dB | 12 dB | linear | trim into follower ("Trigger Sensitivity") |
+| 3 | Attack | 1 … 30 ms | 4 ms | log (0.3) | fast-detector attack |
+| 4 | Range | 0 … 1 | 0.5 | linear | lin→exp curve knee |
+| 5 | Decay | 100 … 800 ms | 300 ms | log (0.3) | slow-detector release |
 | **Waveshaper** | | | | | |
-| 5 | Drive | 0 … 30 dB | 6 dB | linear | pre-shaper gain |
-| 6 | Morph | 0 … 1 | 0.6 | linear | soft ↔ square |
-| 7 | Sub Blend | 0 … 1 | 0.3 | linear | flip-flop sub octave |
+| 6 | Drive | 0 … 30 dB | 6 dB | linear | pre-shaper gain |
+| 7 | Morph | 0 … 1 | 0.6 | linear | soft ↔ square |
+| 8 | Sub Blend | 0 … 1 | 0.3 | linear | flip-flop sub octave |
 | **Filter (global)** | | | | | |
-| 8 | Filter Mode | Envelope / Formant | Envelope | — | mode switch |
-| 9 | Resonance | 0.5 … 12 | 3.0 | log (0.3) | shared across modes |
+| 9 | Filter Mode | Envelope / Formant | Envelope | — | mode switch |
+| 10 | Resonance | 0.5 … 12 | 3.0 | log (0.3) | shared across modes |
 | **Envelope Mode** (visible when mode = Envelope) | | | | | |
-| 10 | Base Cutoff | 80 … 4000 Hz | 250 Hz | log (0.3) | filter starting point |
-| 11 | Env Amount | −4 … +4 octaves | +2.5 | linear | signed sweep depth |
-| 12 | Filter Type | LP / BP | LP | — | SVF output tap |
+| 11 | Base Cutoff | 80 … 4000 Hz | 250 Hz | log (0.3) | filter starting point |
+| 12 | Env Amount | −4 … +4 octaves | +2.5 | linear | signed sweep depth |
+| 13 | Filter Type | LP / BP | LP | — | SVF output tap |
 | **Formant Mode** (visible when mode = Formant) | | | | | |
-| 13 | Vowel A | AH / EH / IH / OH / OO | OO | — | starting vowel |
-| 14 | Vowel B | AH / EH / IH / OH / OO | AH | — | target vowel |
-| 15 | Stretch Curve | Exp / Lin / Log | Lin | — | morph shape |
+| 14 | Vowel A | AH / EH / IH / OH / OO | OO | — | starting vowel |
+| 15 | Vowel B | AH / EH / IH / OH / OO | AH | — | target vowel |
+| 16 | Stretch Curve | Exp / Lin / Log | Lin | — | morph shape |
+| 17 | Formant Depth | 0 … 1 | 1.0 | linear | morph amount (pedal's "Freq Envelope") |
 | **Output** | | | | | |
-| 16 | Wet/Dry | 0 … 100% | 100% | linear | |
-| 17 | Output Level | −12 … +12 dB | 0 dB | linear | |
+| 18 | Wet/Dry | 0 … 100% | 100% | linear | |
+| 19 | Output Level | −12 … +12 dB | 0 dB | linear | |
 
-Total: 17 parameters; ~12 visible at a time (mode-specific params swap in/out).
+Total: 19 parameters; ~14 visible at a time (mode-specific params swap in/out).
 
 ## 5. UI Design
 
@@ -207,11 +234,11 @@ The envelope meter's yellow LED treatment is the centerpiece of the UI — it's 
 ┌─────────────────────────────────────────────────────┐
 │  && THOM & GUY    [envelope meter ▓▓▓▓▓▓░░░░]       │  header: #1A1A1A
 │                                                     │
-│  ┌──INPUT──┐ ┌────ENVELOPE FEEL────┐ ┌──DRIVE──┐   │  cards: #333
-│  │ (Gain)  │ │ (Sens) (Range) (Dec) │ │ (Drv)   │   │
-│  └─────────┘ └──────────────────────┘ │ (Morph) │   │
-│                                        │ (Sub)   │   │
-│                                        └─────────┘   │
+│  ┌──INPUT──┐ ┌──────ENVELOPE FEEL──────┐ ┌──DRIVE──┐ │  cards: #333
+│  │ (Gain)  │ │ (Sens) (Atk) (Range)(Dec)│ │ (Drv)   │ │
+│  └─────────┘ └──────────────────────────┘ │ (Morph) │ │
+│                                            │ (Sub)   │ │
+│                                            └─────────┘ │
 │  ─────────────────────────────────────────────────  │
 │                                                     │
 │  FILTER MODE:  [ ● ENVELOPE ]  [ ○ FORMANT ]       │  mode switch
