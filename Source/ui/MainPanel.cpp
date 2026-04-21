@@ -6,7 +6,8 @@ static float getParamDefault (juce::AudioProcessorValueTreeState& apvts,
                               const juce::String& id)
 {
     auto* p = apvts.getParameter (id);
-    return p != nullptr ? p->convertFrom0to1 (p->getDefaultValue()) : 0.0f;
+    jassert (p != nullptr); // unknown parameter ID — programmer error
+    return p->convertFrom0to1 (p->getDefaultValue());
 }
 
 MainPanel::MainPanel (ThomAndGuyAudioProcessor& p)
