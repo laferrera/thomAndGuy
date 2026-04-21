@@ -24,6 +24,6 @@ void CpuMeter::paint (juce::Graphics& g)
         g.setFont (10.0f);
 
     g.setColour (displayCpu > 80.0f ? BNT::magenta : BNT::nodeGrey);
-    const auto text = "CPU " + juce::String ((int) displayCpu) + "%";
+    const auto text = "CPU " + juce::String (static_cast<int> (displayCpu)) + "%";
     g.drawText (text, getLocalBounds(), juce::Justification::centredRight, false);
 }
