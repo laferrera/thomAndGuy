@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "Tests/TestRunner.h"
 
 ThomAndGuyAudioProcessor::ThomAndGuyAudioProcessor()
     : AudioProcessor (BusesProperties()
@@ -7,6 +8,28 @@ ThomAndGuyAudioProcessor::ThomAndGuyAudioProcessor()
                           .withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
       apvts (*this, nullptr, "PARAMETERS", ParameterLayout::create())
 {
+    static bool testsAttempted = false;
+    if (! testsAttempted)
+    {
+        testsAttempted = true;
+        if (juce::JUCEApplicationBase::isStandaloneApp())
+        {
+            const auto args = juce::JUCEApplicationBase::getCommandLineParameterArray();
+            if (args.contains ("--run-tests"))
+            {
+                juce::UnitTestRunner runner;
+                runner.setAssertOnFailure (false);
+                runner.runAllTests();
+
+                int failures = 0;
+                for (int i = 0; i < runner.getNumResults(); ++i)
+                    if (auto* r = runner.getResult (i))
+                        failures += r->failures;
+
+                std::quick_exit (failures == 0 ? 0 : 1);
+            }
+        }
+    }
 }
 
 void ThomAndGuyAudioProcessor::prepareToPlay (double, int) {}
