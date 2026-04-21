@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 #include "KnobGroup.h"
+#include "ModeSwitch.h"
 #include "../params/ParameterIDs.h"
 
 class ThomAndGuyAudioProcessor;
@@ -40,6 +41,24 @@ private:
     KnobGroup envelopeGroup   { "Envelope Feel" };
     KnobGroup driveGroup      { "Drive" };
     KnobGroup outputGroup     { "Output" };
+
+    ModeSwitch modeSwitch;
+
+    // Envelope-mode cluster
+    juce::Slider baseCutoffSlider, envAmountSlider;
+    juce::ComboBox filterTypeBox;
+    std::unique_ptr<Attachment> baseCutoffAtt, envAmountAtt;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> filterTypeAtt;
+    KnobGroup envelopeModeGroup { "Envelope Mode" };
+
+    // Formant-mode cluster
+    juce::ComboBox vowelABox, vowelBBox, stretchCurveBox;
+    juce::Slider formantDepthSlider;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> vowelAAtt, vowelBAtt, stretchCurveAtt;
+    std::unique_ptr<Attachment> formantDepthAtt;
+    KnobGroup formantModeGroup { "Formant Mode" };
+
+    void applyFilterMode (int modeIndex);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainPanel)
 };

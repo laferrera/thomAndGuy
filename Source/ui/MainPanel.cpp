@@ -2,7 +2,9 @@
 #include "LookAndFeel.h"
 #include "../PluginProcessor.h"
 
-MainPanel::MainPanel (ThomAndGuyAudioProcessor& p) : processor (p)
+MainPanel::MainPanel (ThomAndGuyAudioProcessor& p)
+    : processor (p),
+      modeSwitch (p.apvts, ParamIDs::filterMode, "Envelope", "Formant")
 {
     auto& apvts = p.apvts;
 
@@ -34,9 +36,51 @@ MainPanel::MainPanel (ThomAndGuyAudioProcessor& p) : processor (p)
     addAndMakeVisible (envelopeGroup);
     addAndMakeVisible (driveGroup);
     addAndMakeVisible (outputGroup);
+
+    // Envelope-mode cluster
+    envelopeModeGroup.addSlider (baseCutoffSlider, "Cutoff");
+    baseCutoffAtt = std::make_unique<Attachment> (apvts, ParamIDs::baseCutoff, baseCutoffSlider);
+    envelopeModeGroup.addSlider (envAmountSlider, "Env Amt");
+    envAmountAtt = std::make_unique<Attachment> (apvts, ParamIDs::envAmount, envAmountSlider);
+    filterTypeBox.addItemList (ParamIDs::filterTypeChoices, 1);
+    filterTypeAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
+        apvts, ParamIDs::filterType, filterTypeBox);
+    envelopeModeGroup.addAndMakeVisible (filterTypeBox);
+
+    // Formant-mode cluster
+    vowelABox.addItemList (ParamIDs::vowelChoices, 1);
+    vowelBBox.addItemList (ParamIDs::vowelChoices, 1);
+    stretchCurveBox.addItemList (ParamIDs::stretchCurveChoices, 1);
+    vowelAAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
+        apvts, ParamIDs::vowelA, vowelABox);
+    vowelBAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
+        apvts, ParamIDs::vowelB, vowelBBox);
+    stretchCurveAtt = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment> (
+        apvts, ParamIDs::stretchCurve, stretchCurveBox);
+    formantModeGroup.addSlider (formantDepthSlider, "Depth");
+    formantDepthAtt = std::make_unique<Attachment> (apvts, ParamIDs::formantDepth, formantDepthSlider);
+    formantModeGroup.addAndMakeVisible (vowelABox);
+    formantModeGroup.addAndMakeVisible (vowelBBox);
+    formantModeGroup.addAndMakeVisible (stretchCurveBox);
+
+    addAndMakeVisible (modeSwitch);
+    addAndMakeVisible (envelopeModeGroup);
+    addAndMakeVisible (formantModeGroup);
+
+    modeSwitch.onChange = [this] (int ix) { applyFilterMode (ix); };
+
+    const int initialMode = (int) *apvts.getRawParameterValue (ParamIDs::filterMode);
+    applyFilterMode (initialMode);
 }
 
 MainPanel::~MainPanel() = default;
+
+void MainPanel::applyFilterMode (int modeIndex)
+{
+    const bool envelopeActive = (modeIndex == 0);
+    envelopeModeGroup.setVisible (envelopeActive);
+    formantModeGroup .setVisible (! envelopeActive);
+}
 
 void MainPanel::paint (juce::Graphics& g)
 {
@@ -75,12 +119,34 @@ void MainPanel::resized()
 
     area.removeFromTop (16); // divider gap
 
-    // Middle area reserved for mode switch + mode-specific knobs (Task 18).
-    area.removeFromTop (120);
+    // Middle area: mode switch + mode-specific knobs
+    auto modeRow = area.removeFromTop (36);
+    modeSwitch.setBounds (modeRow);
+
+    area.removeFromTop (8);
+
+    auto clusterRow = area.removeFromTop (80);
+    envelopeModeGroup.setBounds (clusterRow);
+    formantModeGroup .setBounds (clusterRow);
 
     area.removeFromTop (16);
 
     // Bottom row: Output (aligned right, half-width)
     auto bottomRow = area.removeFromTop (80);
     outputGroup.setBounds (bottomRow.removeFromRight (bottomRow.getWidth() / 2));
+
+    // Manually place ComboBoxes inside their respective groups (local coords).
+    {
+        auto r = envelopeModeGroup.getLocalBounds().reduced (6, 24);
+        filterTypeBox.setBounds (r.removeFromRight (60).withHeight (24).withCentre (r.getCentre()));
+    }
+    {
+        auto r = formantModeGroup.getLocalBounds().reduced (6, 24);
+        const int third = r.getWidth() / 3;
+        vowelABox      .setBounds (r.removeFromLeft (third - 4).withHeight (24));
+        r.removeFromLeft (4);
+        vowelBBox      .setBounds (r.removeFromLeft (third - 4).withHeight (24));
+        r.removeFromLeft (4);
+        stretchCurveBox.setBounds (r.removeFromLeft (third - 4).withHeight (24));
+    }
 }
