@@ -76,6 +76,12 @@
         <FILE id="fbtHdr" name="FormantBankTests.h" compile="0" resource="0"
               file="Source/Tests/FormantBankTests.h"/>
       </GROUP>
+      <GROUP id="tMgUi" name="ui">
+        <FILE id="lfCpp" name="LookAndFeel.cpp" compile="1" resource="0"
+              file="Source/ui/LookAndFeel.cpp"/>
+        <FILE id="lfHdr" name="LookAndFeel.h" compile="0" resource="0"
+              file="Source/ui/LookAndFeel.h"/>
+      </GROUP>
       <GROUP id="tMgFnt" name="fonts">
         <FILE id="fReg"  name="ABCROM-Regular-Trial.otf" compile="0" resource="1"
               file="Source/fonts/ABCROM-Regular-Trial.otf"/>
