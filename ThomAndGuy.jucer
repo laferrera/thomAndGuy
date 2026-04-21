@@ -43,8 +43,6 @@
               file="Source/params/ParameterLayout.h"/>
       </GROUP>
       <GROUP id="tMgDsp" name="dsp">
-        <FILE id="psHdr" name="ParamSmoothers.h" compile="0" resource="0"
-              file="Source/dsp/ParamSmoothers.h"/>
         <FILE id="icHdr" name="InputConditioner.h" compile="0" resource="0"
               file="Source/dsp/InputConditioner.h"/>
         <FILE id="icCpp" name="InputConditioner.cpp" compile="1" resource="0"
