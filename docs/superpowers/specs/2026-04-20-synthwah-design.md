@@ -222,7 +222,7 @@ Presets stored as XML in a `Presets/` folder alongside the plugin, loaded via a 
 
 ### Plugin Targets
 
-- **Formats:** AU, VST3, Standalone.
+- **Formats:** AU, VST3, Standalone. **VST3 is the primary target** because Reason (the primary test DAW) accepts VST3 only.
 - **Platform:** macOS universal binary (arm64 + x86_64). Windows not tested in v1.
 - **Build system:** Projucer + Xcode via `build.sh`, matching the conventions of the sibling `PhysicalModelTest/` project.
 
@@ -332,7 +332,7 @@ Tracked as a checklist in `docs/listening-checklist.md`; walked before tagging a
 - Formant mode OO→AH — does the morph sound like a vowel sweep?
 - Sweep Drive / Morph / Sub Blend — any discontinuities, pops, or broken zones?
 - Automate Env Amount −4 → +4 — any zipper noise?
-- Load in Logic and Ableton — plugin loads, saves, restores state correctly?
+- Load in Reason (VST3) — plugin loads, saves, restores state correctly?
 
 ### CI
 
@@ -344,11 +344,11 @@ For any implementation work that touches audio, completion requires:
 
 - All unit tests passing.
 - `build.sh` produces clean AU and VST3 with no warnings.
-- Plugin loads in Logic and Ableton without crashing or glitching on parameter changes.
+- Plugin loads in Reason (VST3) without crashing or glitching on parameter changes.
 - Manual listening checklist completed for the affected feature.
 
 ## 8. Open Items
 
-- **Primary test DAW** not yet decided (Logic vs. Ableton vs. Reaper). Default assumption for the checklist: both Logic and Ableton. Revisit once the user confirms.
+- **Primary test DAW: Reason** (VST3). Secondary DAWs for compatibility sanity-checks are not planned for v1.
 - **Accent color** for the UI (muted amber vs. pale green) is a visual preference to be finalized during implementation of the `LookAndFeel`.
 - **Plugin display name / manufacturer string / plugin code** for the `.jucer` file need to be chosen. Suggested: display name "Thom & Guy," manufacturer "FGSake" (or user's preferred), 4-char plugin code TBD.
