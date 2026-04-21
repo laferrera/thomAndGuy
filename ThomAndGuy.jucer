@@ -76,6 +76,14 @@
         <FILE id="fbtHdr" name="FormantBankTests.h" compile="0" resource="0"
               file="Source/Tests/FormantBankTests.h"/>
       </GROUP>
+      <GROUP id="tMgFnt" name="fonts">
+        <FILE id="fReg"  name="ABCROM-Regular-Trial.otf" compile="0" resource="1"
+              file="Source/fonts/ABCROM-Regular-Trial.otf"/>
+        <FILE id="fBold" name="ABCROM-Bold-Trial.otf" compile="0" resource="1"
+              file="Source/fonts/ABCROM-Bold-Trial.otf"/>
+        <FILE id="fMono" name="ABCROMMono-Regular-Trial.otf" compile="0" resource="1"
+              file="Source/fonts/ABCROMMono-Regular-Trial.otf"/>
+      </GROUP>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
