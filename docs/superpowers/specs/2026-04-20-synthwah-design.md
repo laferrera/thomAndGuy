@@ -262,6 +262,11 @@ This plugin is an **audio effect**, not a synth instrument. Configure the `.juce
 
 | Field | Value | Note |
 |---|---|---|
+| `name` / project name | `ThomAndGuy` | file: `ThomAndGuy.jucer` |
+| `pluginName` | `Thom & Guy` | user-facing name in host plugin lists |
+| `companyName` | `AmpersandAmpersand` | manufacturer string |
+| `pluginManufacturerCode` | `Ampr` | 4-char manufacturer ID for AU |
+| `pluginCode` | `ThGy` | 4-char plugin ID, unique per plugin |
 | `projectType` | `audioplug` | — |
 | `pluginIsSynth` | `0` | effect, not instrument |
 | `pluginWantsMidiIn` | `0` | no MIDI |
@@ -398,11 +403,12 @@ For any implementation work that touches audio, completion requires:
 - Plugin loads in Reason (VST3) without crashing or glitching on parameter changes.
 - Manual listening checklist completed for the affected feature.
 
-## 8. Open Items
+## 8. Resolved Decisions
 
-- **Primary test DAW:** Reason (VST3). Secondary DAWs for compatibility sanity-checks are not planned for v1.
-- **UI style:** resolved — inherit the AmpersandAmpersand (`&&`) design system from `../PhysicalModelTest/DESIGN.md`. No separate accent-color decision to make.
-- **`.jucer` metadata still to be set:**
-  - Display / project name: suggested **"Thom & Guy"**.
-  - Company / manufacturer string: not set in the sibling project either; needs a user decision (e.g., "AmpersandAmpersand," the user's org, or a personal string).
-  - 4-char plugin code: needs to be unique across the user's plugins. Suggested **`ThGy`**, to be confirmed against any other plugins the user has shipped.
+- **Primary test DAW:** Reason (VST3 only). No secondary DAW compatibility target for v1.
+- **UI style:** Inherit the AmpersandAmpersand (`&&`) design system from `../PhysicalModelTest/DESIGN.md`.
+- **Plugin identity:**
+  - Plugin display name: **Thom & Guy**
+  - Manufacturer / company name: **AmpersandAmpersand**
+  - Manufacturer 4-char code: **Ampr**
+  - Plugin 4-char code: **ThGy**
