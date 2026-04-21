@@ -75,6 +75,30 @@ public:
                 }
             }
         }
+
+        {
+            beginTest ("Sub blend non-zero produces sub-octave component");
+            WaveshaperChain ws;
+            ws.prepare (44100.0);
+            ws.setDriveDb  (0.0f);
+            ws.setMorph    (1.0f);
+            ws.setSubBlend (1.0f);
+
+            const double sr = 44100.0;
+            const float twoPiF = juce::MathConstants<float>::twoPi * 440.0f;
+
+            int crossings = 0;
+            float prev = 0.0f;
+            for (int i = 0; i < (int) sr; ++i)
+            {
+                const float x = std::sin (twoPiF * (float) i / (float) sr);
+                const float y = ws.process (x);
+                if (prev < 0.0f && y >= 0.0f) ++crossings;
+                prev = y;
+            }
+            expect (crossings >= 210 && crossings <= 230,
+                    "Sub-only output should have roughly 220 zero-crossings");
+        }
     }
 };
 

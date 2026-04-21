@@ -7,3 +7,4 @@
 #include "InputConditionerTests.h"
 #include "EnvelopeFollowerTests.h"
 #include "WaveshaperChainTests.h"
+#include "SubOctaveDividerTests.h"

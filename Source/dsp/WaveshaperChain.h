@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "SubOctaveDivider.h"
 
 class WaveshaperChain
 {
@@ -21,4 +22,6 @@ private:
 
     float sqState = 0.0f;
     float sqSlewCoeff = 0.0f;
+
+    SubOctaveDivider subDivider;
 };

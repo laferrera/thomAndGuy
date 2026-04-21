@@ -43,6 +43,10 @@
               file="Source/dsp/WaveshaperChain.h"/>
         <FILE id="wsCpp" name="WaveshaperChain.cpp" compile="1" resource="0"
               file="Source/dsp/WaveshaperChain.cpp"/>
+        <FILE id="sdHdr" name="SubOctaveDivider.h" compile="0" resource="0"
+              file="Source/dsp/SubOctaveDivider.h"/>
+        <FILE id="sdCpp" name="SubOctaveDivider.cpp" compile="1" resource="0"
+              file="Source/dsp/SubOctaveDivider.cpp"/>
       </GROUP>
       <GROUP id="tMgTst" name="Tests">
         <FILE id="trHdr" name="TestRunner.h" compile="0" resource="0"
@@ -53,6 +57,8 @@
               file="Source/Tests/EnvelopeFollowerTests.h"/>
         <FILE id="wstHdr" name="WaveshaperChainTests.h" compile="0" resource="0"
               file="Source/Tests/WaveshaperChainTests.h"/>
+        <FILE id="sdtHdr" name="SubOctaveDividerTests.h" compile="0" resource="0"
+              file="Source/Tests/SubOctaveDividerTests.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>
