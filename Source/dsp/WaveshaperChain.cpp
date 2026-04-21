@@ -2,7 +2,6 @@
 
 void WaveshaperChain::prepare (double sampleRate)
 {
-    sr = sampleRate;
     sqState = 0.0f;
     const double samples = 4.0;
     const double tau = samples / sampleRate;

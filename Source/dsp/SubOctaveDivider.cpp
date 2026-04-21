@@ -2,7 +2,6 @@
 
 void SubOctaveDivider::prepare (double sampleRate)
 {
-    sr = sampleRate;
     flipFlop = 0.0f;
     lastSignedInput = 0.0f;
     lpState = 0.0f;

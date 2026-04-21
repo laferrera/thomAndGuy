@@ -15,7 +15,6 @@ public:
     float process (float input);
 
 private:
-    double sr = 44100.0;
     float  driveGain = 1.0f;
     float  morph = 0.0f;
     float  subBlend = 0.0f;
