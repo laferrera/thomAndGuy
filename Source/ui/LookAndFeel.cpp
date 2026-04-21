@@ -1,12 +1,3 @@
-/*
-  ==============================================================================
-
-    LookAndFeel — && design system implementation
-    Ported from ../PhysicalModelTest/Source/AmpersandLookAndFeel
-
-  ==============================================================================
-*/
-
 #include "LookAndFeel.h"
 #include "BinaryData.h"
 
@@ -19,12 +10,8 @@ ThomAndGuyLookAndFeel::ThomAndGuyLookAndFeel()
     monoRegularTf = juce::Typeface::createSystemTypefaceFor (BinaryData::ABCROMMonoRegularTrial_otf,
                                                               BinaryData::ABCROMMonoRegularTrial_otfSize);
 
-    // --- Global colour scheme ---
-
-    // Window
     setColour (juce::ResizableWindow::backgroundColourId, BNT::black0);
 
-    // Sliders
     setColour (juce::Slider::rotarySliderFillColourId,    BNT::cyan);
     setColour (juce::Slider::rotarySliderOutlineColourId, BNT::black2);
     setColour (juce::Slider::thumbColourId,               BNT::cream);
@@ -33,24 +20,20 @@ ThomAndGuyLookAndFeel::ThomAndGuyLookAndFeel()
     setColour (juce::Slider::textBoxOutlineColourId,      juce::Colours::transparentBlack);
     setColour (juce::Slider::textBoxHighlightColourId,    BNT::cyan.withAlpha (0.3f));
 
-    // Labels
     setColour (juce::Label::textColourId,       BNT::nodeGrey);
     setColour (juce::Label::backgroundColourId, juce::Colours::transparentBlack);
 
-    // ComboBox
     setColour (juce::ComboBox::backgroundColourId, BNT::black3);
     setColour (juce::ComboBox::textColourId,       BNT::cream);
     setColour (juce::ComboBox::outlineColourId,    BNT::black2);
     setColour (juce::ComboBox::arrowColourId,      BNT::nodeGrey);
     setColour (juce::ComboBox::focusedOutlineColourId, BNT::cyan);
 
-    // PopupMenu
     setColour (juce::PopupMenu::backgroundColourId,            BNT::black1);
     setColour (juce::PopupMenu::textColourId,                  BNT::cream);
     setColour (juce::PopupMenu::highlightedBackgroundColourId, BNT::magenta);
     setColour (juce::PopupMenu::highlightedTextColourId,       BNT::cream);
 
-    // MidiKeyboardComponent
     setColour (juce::MidiKeyboardComponent::whiteNoteColourId,          BNT::black2);
     setColour (juce::MidiKeyboardComponent::blackNoteColourId,          BNT::black1);
     setColour (juce::MidiKeyboardComponent::keySeparatorLineColourId,   BNT::black3);
@@ -60,14 +43,13 @@ ThomAndGuyLookAndFeel::ThomAndGuyLookAndFeel()
     setColour (juce::MidiKeyboardComponent::upDownButtonArrowColourId,  BNT::nodeGrey);
     setColour (juce::MidiKeyboardComponent::shadowColourId,             juce::Colours::transparentBlack);
 
-    // TextEditor (for slider text boxes)
+    // Slider text boxes use TextEditor internally.
     setColour (juce::TextEditor::backgroundColourId,   BNT::black3);
     setColour (juce::TextEditor::textColourId,         BNT::cream);
     setColour (juce::TextEditor::outlineColourId,      BNT::black2);
     setColour (juce::TextEditor::focusedOutlineColourId, BNT::cyan);
     setColour (juce::TextEditor::highlightColourId,    BNT::cyan.withAlpha (0.3f));
 
-    // Caret
     setColour (juce::CaretComponent::caretColourId, BNT::cyan);
 }
 

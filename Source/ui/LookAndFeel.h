@@ -1,12 +1,4 @@
-/*
-  ==============================================================================
-
-    LookAndFeel — && design system for JUCE
-    Ported from ../PhysicalModelTest/Source/AmpersandLookAndFeel
-    Dark register, CMY accents, sharp corners, ABC ROM fonts
-
-  ==============================================================================
-*/
+// && design system: dark register, CMY accents, sharp corners, ABC ROM fonts.
 
 #pragma once
 
