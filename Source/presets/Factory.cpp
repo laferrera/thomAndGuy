@@ -28,6 +28,7 @@ bool FactoryPresets::load (int index, juce::AudioProcessorValueTreeState& apvts)
 
     int size = 0;
     const char* data = BinaryData::getNamedResource (def.resource, size);
+    jassert (data != nullptr); // resource names are baked in at build time — missing means Projucer out of sync
     if (data == nullptr) return false;
 
     std::unique_ptr<juce::XmlElement> xml (juce::XmlDocument::parse (juce::String (data, (size_t) size)));
