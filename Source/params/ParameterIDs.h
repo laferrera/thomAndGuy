@@ -28,4 +28,9 @@ namespace ParamIDs
     inline const juce::StringArray filterTypeChoices   { "LP", "BP" };
     inline const juce::StringArray vowelChoices        { "AH", "EH", "IH", "OH", "OO" };
     inline const juce::StringArray stretchCurveChoices { "Exp", "Linear", "Log" };
+
+    // Typed views of the choice indices above. Order must match the StringArrays.
+    enum class FilterMode : int { Envelope = 0, Formant = 1 };
+    enum class FilterType : int { LowPass  = 0, BandPass = 1 };
+    enum class StretchCurve : int { Exp = 0, Linear = 1, Log = 2 };
 }

@@ -92,7 +92,8 @@ MainPanel::~MainPanel() = default;
 
 void MainPanel::applyFilterMode (int modeIndex)
 {
-    const bool envelopeActive = (modeIndex == 0);
+    const auto mode = static_cast<ParamIDs::FilterMode> (modeIndex);
+    const bool envelopeActive = (mode == ParamIDs::FilterMode::Envelope);
     envelopeModeGroup.setVisible (envelopeActive);
     formantModeGroup .setVisible (! envelopeActive);
 }

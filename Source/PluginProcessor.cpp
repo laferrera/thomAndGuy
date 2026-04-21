@@ -88,15 +88,18 @@ void ThomAndGuyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     const float morph        = *apvts.getRawParameterValue (ParamIDs::morph);
     const float subBlend     = *apvts.getRawParameterValue (ParamIDs::subBlend);
 
-    const int   filterModeIx = (int) *apvts.getRawParameterValue (ParamIDs::filterMode);
+    const auto  filterMode   = static_cast<ParamIDs::FilterMode> (
+                                   (int) *apvts.getRawParameterValue (ParamIDs::filterMode));
     const float resonance    = *apvts.getRawParameterValue (ParamIDs::resonance);
     const float baseCutoff   = *apvts.getRawParameterValue (ParamIDs::baseCutoff);
     const float envAmount    = *apvts.getRawParameterValue (ParamIDs::envAmount);
-    const int   filterTypeIx = (int) *apvts.getRawParameterValue (ParamIDs::filterType);
+    const auto  filterType   = static_cast<ParamIDs::FilterType> (
+                                   (int) *apvts.getRawParameterValue (ParamIDs::filterType));
 
     const int   vowelAIx     = (int) *apvts.getRawParameterValue (ParamIDs::vowelA);
     const int   vowelBIx     = (int) *apvts.getRawParameterValue (ParamIDs::vowelB);
-    const int   stretchIx    = (int) *apvts.getRawParameterValue (ParamIDs::stretchCurve);
+    const auto  stretchCurve = static_cast<ParamIDs::StretchCurve> (
+                                   (int) *apvts.getRawParameterValue (ParamIDs::stretchCurve));
     const float formantDepth = *apvts.getRawParameterValue (ParamIDs::formantDepth);
 
     const float wetDry       = *apvts.getRawParameterValue (ParamIDs::wetDry);
@@ -110,19 +113,21 @@ void ThomAndGuyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     waveshaperChain.setDriveDb (driveDb);
     waveshaperChain.setMorph (morph);
     waveshaperChain.setSubBlend (subBlend);
-    envelopeFilter.setMode (filterTypeIx == 0 ? Filter::Mode::LowPass : Filter::Mode::BandPass);
+    envelopeFilter.setMode (filterType == ParamIDs::FilterType::LowPass
+                                ? Filter::Mode::LowPass
+                                : Filter::Mode::BandPass);
     envelopeFilter.setResonance (resonance);
     formantBank.setVowelA (vowelAIx);
     formantBank.setVowelB (vowelBIx);
     formantBank.setResonance (resonance);
 
     const float outLevelLinear = juce::Decibels::decibelsToGain (outLevelDb);
-    const bool  formantActive  = (filterModeIx == 1);
+    const bool  formantActive  = (filterMode == ParamIDs::FilterMode::Formant);
 
-    auto applyStretch = [] (float e, int ix) -> float
+    auto applyStretch = [] (float e, ParamIDs::StretchCurve curve) -> float
     {
-        if (ix == 0) return e * e;
-        if (ix == 2) return std::sqrt (e);
+        if (curve == ParamIDs::StretchCurve::Exp) return e * e;
+        if (curve == ParamIDs::StretchCurve::Log) return std::sqrt (e);
         return e;
     };
 
@@ -184,7 +189,7 @@ void ThomAndGuyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         }
         else
         {
-            const float morphAmt = formantDepth * applyStretch (env, stretchIx);
+            const float morphAmt = formantDepth * applyStretch (env, stretchCurve);
             formantBank.setMorph (morphAmt);
             wet = formantBank.process (shaped[n]);
         }
