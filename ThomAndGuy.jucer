@@ -134,7 +134,8 @@
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
+    <XCODE_MAC targetFolder="Builds/MacOSX" microphonePermissionNeeded="1"
+               microphonePermissionsText="Thom &amp; Guy needs microphone access to process audio input.">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" osxCompatibility="10.13 SDK"
                        osxArchitecture="Native"/>
