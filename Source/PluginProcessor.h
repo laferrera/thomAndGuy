@@ -52,6 +52,12 @@ private:
     std::unique_ptr<juce::dsp::Oversampling<float>> oversampler;
     static constexpr int oversampleFactor = 2; // log2(4) = 2 => 4x
 
+    // Scratch buffers preallocated in prepareToPlay, reused per processBlock.
+    juce::AudioBuffer<float> dryBuffer;
+    juce::AudioBuffer<float> conditionedBuffer;
+    juce::AudioBuffer<float> shapedBuffer;
+    std::vector<float> envBuffer;
+
     std::atomic<float> envelopeForUI { 0.0f };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThomAndGuyAudioProcessor)

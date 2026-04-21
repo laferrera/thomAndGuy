@@ -52,6 +52,11 @@ void ThomAndGuyAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     envelopeFilter.setMode (Filter::Mode::LowPass);
     formantBank.prepare (sampleRate);
 
+    dryBuffer.setSize (1, samplesPerBlock, false, false, false);
+    conditionedBuffer.setSize (1, samplesPerBlock, false, false, false);
+    shapedBuffer.setSize (1, samplesPerBlock, false, false, false);
+    envBuffer.assign ((size_t) samplesPerBlock, 0.0f);
+
     setLatencySamples ((int) oversampler->getLatencyInSamples());
 }
 
@@ -120,6 +125,20 @@ void ThomAndGuyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         return e;
     };
 
+    // Scratch buffer resize guard (host may exceed prepareToPlay's samplesPerBlock).
+    if (dryBuffer.getNumSamples() < numSamples)
+        dryBuffer.setSize (1, numSamples, false, false, true);
+    if (conditionedBuffer.getNumSamples() < numSamples)
+        conditionedBuffer.setSize (1, numSamples, false, false, true);
+    if (shapedBuffer.getNumSamples() < numSamples)
+        shapedBuffer.setSize (1, numSamples, false, false, true);
+    if ((int) envBuffer.size() < numSamples)
+        envBuffer.resize ((size_t) numSamples);
+
+    float* dry  = dryBuffer.getWritePointer (0);
+    float* cond = conditionedBuffer.getWritePointer (0);
+
+    // Pass A — per-sample: collapse to mono, condition, compute env.
     for (int n = 0; n < numSamples; ++n)
     {
         float mono = 0.0f;
@@ -127,47 +146,57 @@ void ThomAndGuyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
             mono += buffer.getReadPointer (ch)[n];
         if (totalIn > 0) mono /= (float) totalIn;
 
-        const float conditioned = inputConditioner.process (mono);
-        const float env = envelopeFollower.process (conditioned);
+        dry[n]  = mono;
+        cond[n] = inputConditioner.process (mono);
+        envBuffer[(size_t) n] = envelopeFollower.process (cond[n]);
+    }
 
-        juce::AudioBuffer<float> oneIn (1, 1);
-        oneIn.getWritePointer (0)[0] = conditioned;
-
-        juce::dsp::AudioBlock<float> inBlock (oneIn);
+    // Pass B — block-level: upsample conditioned → waveshape → downsample into shapedBuffer.
+    {
+        juce::dsp::AudioBlock<float> inBlock (conditionedBuffer.getArrayOfWritePointers(),
+                                              1, (size_t) numSamples);
         auto upBlock = oversampler->processSamplesUp (inBlock);
 
-        const int upSamples = (int) upBlock.getNumSamples();
-        for (int u = 0; u < upSamples; ++u)
-            upBlock.getChannelPointer (0)[u]
-                = waveshaperChain.process (upBlock.getChannelPointer (0)[u]);
+        const size_t upSamples = upBlock.getNumSamples();
+        auto* upData = upBlock.getChannelPointer (0);
+        for (size_t u = 0; u < upSamples; ++u)
+            upData[u] = waveshaperChain.process (upData[u]);
 
-        juce::AudioBuffer<float> oneOut (1, 1);
-        juce::dsp::AudioBlock<float> outBlock (oneOut);
+        juce::dsp::AudioBlock<float> outBlock (shapedBuffer.getArrayOfWritePointers(),
+                                               1, (size_t) numSamples);
         oversampler->processSamplesDown (outBlock);
-        const float shaped = oneOut.getReadPointer (0)[0];
+    }
+
+    const float* shaped = shapedBuffer.getReadPointer (0);
+
+    // Pass C — per-sample: filter + wet/dry + write to every output channel.
+    for (int n = 0; n < numSamples; ++n)
+    {
+        const float env = envBuffer[(size_t) n];
 
         float wet = 0.0f;
         if (! formantActive)
         {
             const float cutoff = baseCutoff * std::pow (2.0f, envAmount * env);
             envelopeFilter.setCutoffHz (cutoff);
-            wet = envelopeFilter.process (shaped);
+            wet = envelopeFilter.process (shaped[n]);
         }
         else
         {
             const float morphAmt = formantDepth * applyStretch (env, stretchIx);
             formantBank.setMorph (morphAmt);
-            wet = formantBank.process (shaped);
+            wet = formantBank.process (shaped[n]);
         }
 
-        const float mixed = (wetDry * wet + (1.0f - wetDry) * mono) * outLevelLinear;
+        const float mixed = (wetDry * wet + (1.0f - wetDry) * dry[n]) * outLevelLinear;
 
         for (int ch = 0; ch < totalOut; ++ch)
             buffer.getWritePointer (ch)[n] = mixed;
-
-        if (n == numSamples - 1)
-            envelopeForUI.store (env, std::memory_order_relaxed);
     }
+
+    if (numSamples > 0)
+        envelopeForUI.store (envBuffer[(size_t) (numSamples - 1)],
+                             std::memory_order_relaxed);
 }
 
 juce::AudioProcessorEditor* ThomAndGuyAudioProcessor::createEditor()
