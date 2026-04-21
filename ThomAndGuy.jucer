@@ -115,6 +115,12 @@
               file="Source/ui/PresetBar.cpp"/>
         <FILE id="pbHdr" name="PresetBar.h" compile="0" resource="0"
               file="Source/ui/PresetBar.h"/>
+        <FILE id="vsHdr" name="ValueSlider.h" compile="0" resource="0"
+              file="Source/ui/ValueSlider.h"/>
+        <FILE id="cmCpp" name="CpuMeter.cpp" compile="1" resource="0"
+              file="Source/ui/CpuMeter.cpp"/>
+        <FILE id="cmHdr" name="CpuMeter.h" compile="0" resource="0"
+              file="Source/ui/CpuMeter.h"/>
       </GROUP>
       <GROUP id="tMgFac" name="presets">
         <FILE id="fcCpp" name="Factory.cpp" compile="1" resource="0"

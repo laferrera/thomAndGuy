@@ -73,6 +73,7 @@ bool ThomAndGuyAudioProcessor::isBusesLayoutSupported (const BusesLayout& layout
 void ThomAndGuyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
     juce::ScopedNoDenormals noDenormals;
+    const auto cpuStart = juce::Time::getHighResolutionTicks();
 
     const auto numSamples = buffer.getNumSamples();
     const auto totalIn  = getTotalNumInputChannels();
@@ -197,6 +198,12 @@ void ThomAndGuyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     if (numSamples > 0)
         envelopeForUI.store (envBuffer[(size_t) (numSamples - 1)],
                              std::memory_order_relaxed);
+
+    const auto elapsed = juce::Time::highResolutionTicksToSeconds (
+        juce::Time::getHighResolutionTicks() - cpuStart);
+    const auto available = (double) numSamples / getSampleRate();
+    if (available > 0.0)
+        cpuLoad.store ((float) (elapsed / available), std::memory_order_relaxed);
 }
 
 juce::AudioProcessorEditor* ThomAndGuyAudioProcessor::createEditor()

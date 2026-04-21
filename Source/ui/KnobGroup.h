@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "ValueSlider.h"
 
 class KnobGroup : public juce::Component
 {
@@ -8,13 +9,13 @@ public:
     explicit KnobGroup (juce::String title);
 
     // Non-owning — caller keeps the slider alive.
-    void addSlider (juce::Slider& slider, juce::String label);
+    void addSlider (ValueSlider& slider, juce::String label);
 
     void paint    (juce::Graphics&) override;
     void resized  ()                override;
 
 private:
-    struct Entry { juce::Slider* slider; juce::String label; };
+    struct Entry { ValueSlider* slider; juce::String label; };
 
     juce::String groupTitle;
     std::vector<Entry> entries;

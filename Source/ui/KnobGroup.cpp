@@ -3,7 +3,7 @@
 
 KnobGroup::KnobGroup (juce::String title) : groupTitle (std::move (title)) {}
 
-void KnobGroup::addSlider (juce::Slider& slider, juce::String label)
+void KnobGroup::addSlider (ValueSlider& slider, juce::String label)
 {
     entries.push_back ({ &slider, std::move (label) });
     addAndMakeVisible (slider);

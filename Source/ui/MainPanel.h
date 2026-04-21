@@ -5,6 +5,8 @@
 #include "ModeSwitch.h"
 #include "EnvelopeMeter.h"
 #include "PresetBar.h"
+#include "ValueSlider.h"
+#include "CpuMeter.h"
 #include "../params/ParameterIDs.h"
 
 class ThomAndGuyAudioProcessor;
@@ -24,19 +26,19 @@ private:
     ThomAndGuyAudioProcessor& processor;
 
     // Input
-    juce::Slider inputGainSlider;
+    ValueSlider inputGainSlider;
     std::unique_ptr<Attachment> inputGainAtt;
 
     // Envelope Feel
-    juce::Slider sensitivitySlider, attackSlider, rangeSlider, decaySlider;
+    ValueSlider sensitivitySlider, attackSlider, rangeSlider, decaySlider;
     std::unique_ptr<Attachment> sensitivityAtt, attackAtt, rangeAtt, decayAtt;
 
     // Drive
-    juce::Slider driveSlider, morphSlider, subBlendSlider;
+    ValueSlider driveSlider, morphSlider, subBlendSlider;
     std::unique_ptr<Attachment> driveAtt, morphAtt, subBlendAtt;
 
     // Output
-    juce::Slider wetDrySlider, outputLevelSlider;
+    ValueSlider wetDrySlider, outputLevelSlider;
     std::unique_ptr<Attachment> wetDryAtt, outputLevelAtt;
 
     KnobGroup inputGroup      { "Input" };
@@ -47,9 +49,10 @@ private:
     ModeSwitch modeSwitch;
     EnvelopeMeter envelopeMeter;
     PresetBar presetBar;
+    CpuMeter cpuMeter;
 
     // Envelope-mode cluster
-    juce::Slider baseCutoffSlider, envAmountSlider;
+    ValueSlider baseCutoffSlider, envAmountSlider;
     juce::ComboBox filterTypeBox;
     std::unique_ptr<Attachment> baseCutoffAtt, envAmountAtt;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> filterTypeAtt;
@@ -57,7 +60,7 @@ private:
 
     // Formant-mode cluster
     juce::ComboBox vowelABox, vowelBBox, stretchCurveBox;
-    juce::Slider formantDepthSlider;
+    ValueSlider formantDepthSlider;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> vowelAAtt, vowelBAtt, stretchCurveAtt;
     std::unique_ptr<Attachment> formantDepthAtt;
     KnobGroup formantModeGroup { "Formant Mode" };

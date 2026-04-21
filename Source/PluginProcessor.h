@@ -42,6 +42,9 @@ public:
 
     float getEnvelopeForUI() const noexcept { return envelopeForUI.load(); }
 
+    std::atomic<float> cpuLoad { 0.0f };
+    float getCpuLoad() const noexcept { return cpuLoad.load(); }
+
 private:
     InputConditioner  inputConditioner;
     EnvelopeFollower  envelopeFollower;

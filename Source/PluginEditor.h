@@ -18,6 +18,7 @@ private:
     ThomAndGuyAudioProcessor& audioProcessor;
     ThomAndGuyLookAndFeel lnf;
     MainPanel mainPanel;
+    juce::TooltipWindow tooltipWindow { this, 500 }; // 500 ms delay
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThomAndGuyAudioProcessorEditor)
 };
