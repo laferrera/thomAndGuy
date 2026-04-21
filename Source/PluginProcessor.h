@@ -49,6 +49,9 @@ private:
     SvfFilter         envelopeFilter;
     FormantBank       formantBank;
 
+    std::unique_ptr<juce::dsp::Oversampling<float>> oversampler;
+    static constexpr int oversampleFactor = 2; // log2(4) = 2 => 4x
+
     std::atomic<float> envelopeForUI { 0.0f };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThomAndGuyAudioProcessor)

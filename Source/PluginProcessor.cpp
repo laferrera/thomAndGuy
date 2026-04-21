@@ -32,14 +32,27 @@ ThomAndGuyAudioProcessor::ThomAndGuyAudioProcessor()
     }
 }
 
-void ThomAndGuyAudioProcessor::prepareToPlay (double sampleRate, int /*samplesPerBlock*/)
+void ThomAndGuyAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+    oversampler = std::make_unique<juce::dsp::Oversampling<float>> (
+        1,                                    // mono
+        oversampleFactor,
+        juce::dsp::Oversampling<float>::filterHalfBandPolyphaseIIR,
+        true,  // maxOrder
+        true); // integerLatency
+    oversampler->initProcessing ((size_t) samplesPerBlock);
+    oversampler->reset();
+
+    const double osSr = sampleRate * (1 << oversampleFactor);
+
     inputConditioner.prepare (sampleRate);
     envelopeFollower.prepare (sampleRate);
-    waveshaperChain.prepare (sampleRate);
+    waveshaperChain.prepare (osSr);
     envelopeFilter.prepare (sampleRate);
     envelopeFilter.setMode (Filter::Mode::LowPass);
     formantBank.prepare (sampleRate);
+
+    setLatencySamples ((int) oversampler->getLatencyInSamples());
 }
 
 void ThomAndGuyAudioProcessor::releaseResources() {}
@@ -117,7 +130,21 @@ void ThomAndGuyAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         const float conditioned = inputConditioner.process (mono);
         const float env = envelopeFollower.process (conditioned);
 
-        const float shaped = waveshaperChain.process (conditioned);
+        juce::AudioBuffer<float> oneIn (1, 1);
+        oneIn.getWritePointer (0)[0] = conditioned;
+
+        juce::dsp::AudioBlock<float> inBlock (oneIn);
+        auto upBlock = oversampler->processSamplesUp (inBlock);
+
+        const int upSamples = (int) upBlock.getNumSamples();
+        for (int u = 0; u < upSamples; ++u)
+            upBlock.getChannelPointer (0)[u]
+                = waveshaperChain.process (upBlock.getChannelPointer (0)[u]);
+
+        juce::AudioBuffer<float> oneOut (1, 1);
+        juce::dsp::AudioBlock<float> outBlock (oneOut);
+        oversampler->processSamplesDown (outBlock);
+        const float shaped = oneOut.getReadPointer (0)[0];
 
         float wet = 0.0f;
         if (! formantActive)
