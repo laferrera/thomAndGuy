@@ -53,6 +53,12 @@
               file="Source/dsp/SvfFilter.h"/>
         <FILE id="svCpp" name="SvfFilter.cpp" compile="1" resource="0"
               file="Source/dsp/SvfFilter.cpp"/>
+        <FILE id="ftHdr" name="FormantTables.h" compile="0" resource="0"
+              file="Source/dsp/FormantTables.h"/>
+        <FILE id="fbHdr" name="FormantBank.h" compile="0" resource="0"
+              file="Source/dsp/FormantBank.h"/>
+        <FILE id="fbCpp" name="FormantBank.cpp" compile="1" resource="0"
+              file="Source/dsp/FormantBank.cpp"/>
       </GROUP>
       <GROUP id="tMgTst" name="Tests">
         <FILE id="trHdr" name="TestRunner.h" compile="0" resource="0"
@@ -67,6 +73,8 @@
               file="Source/Tests/SubOctaveDividerTests.h"/>
         <FILE id="svtHdr" name="SvfFilterTests.h" compile="0" resource="0"
               file="Source/Tests/SvfFilterTests.h"/>
+        <FILE id="fbtHdr" name="FormantBankTests.h" compile="0" resource="0"
+              file="Source/Tests/FormantBankTests.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>

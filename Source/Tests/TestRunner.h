@@ -9,3 +9,4 @@
 #include "WaveshaperChainTests.h"
 #include "SubOctaveDividerTests.h"
 #include "SvfFilterTests.h"
+#include "FormantBankTests.h"
