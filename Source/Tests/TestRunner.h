@@ -6,3 +6,4 @@
 
 #include "InputConditionerTests.h"
 #include "EnvelopeFollowerTests.h"
+#include "WaveshaperChainTests.h"

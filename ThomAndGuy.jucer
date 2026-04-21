@@ -39,6 +39,10 @@
               file="Source/dsp/EnvelopeFollower.h"/>
         <FILE id="efCpp" name="EnvelopeFollower.cpp" compile="1" resource="0"
               file="Source/dsp/EnvelopeFollower.cpp"/>
+        <FILE id="wsHdr" name="WaveshaperChain.h" compile="0" resource="0"
+              file="Source/dsp/WaveshaperChain.h"/>
+        <FILE id="wsCpp" name="WaveshaperChain.cpp" compile="1" resource="0"
+              file="Source/dsp/WaveshaperChain.cpp"/>
       </GROUP>
       <GROUP id="tMgTst" name="Tests">
         <FILE id="trHdr" name="TestRunner.h" compile="0" resource="0"
@@ -47,6 +51,8 @@
               file="Source/Tests/InputConditionerTests.h"/>
         <FILE id="eftHdr" name="EnvelopeFollowerTests.h" compile="0" resource="0"
               file="Source/Tests/EnvelopeFollowerTests.h"/>
+        <FILE id="wstHdr" name="WaveshaperChainTests.h" compile="0" resource="0"
+              file="Source/Tests/WaveshaperChainTests.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>
