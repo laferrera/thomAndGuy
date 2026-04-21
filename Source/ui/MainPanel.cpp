@@ -138,9 +138,9 @@ void MainPanel::resized()
 
     area.removeFromTop (16);
 
-    // Bottom row: Output (aligned right, half-width)
-    auto bottomRow = area.removeFromTop (80);
-    outputGroup.setBounds (bottomRow.removeFromRight (bottomRow.getWidth() / 2));
+    // Bottom row: Output (full width)
+    auto bottomRow = area.removeFromTop (96);
+    outputGroup.setBounds (bottomRow);
 
     // Manually place ComboBoxes inside their respective groups (local coords).
     {

@@ -5,7 +5,7 @@ ThomAndGuyAudioProcessorEditor::ThomAndGuyAudioProcessorEditor (ThomAndGuyAudioP
 {
     setLookAndFeel (&lnf);
     addAndMakeVisible (mainPanel);
-    setSize (600, 360);
+    setSize (600, 440);
 }
 
 ThomAndGuyAudioProcessorEditor::~ThomAndGuyAudioProcessorEditor()
