@@ -10,7 +10,7 @@ public:
 
     void setDriveDb  (float db);
     void setMorph    (float value);    // 0 = soft, 1 = hard
-    void setSubBlend (float value);    // sub-octave mix, 0..1 (implemented Task 8)
+    void setSubBlend (float value);    // sub-octave mix, 0..1
 
     float process (float input);
 
