@@ -269,16 +269,16 @@ python capture.py record --mode 1 --config 7     # redo a single config
 ### Failure messages — operator-actionable, not stack traces
 
 ```
-m1_smm_cmm_rmm: ADC ch2 peak -0.3 dBFS (clip risk).
+m1_sm_cm_rm: ADC ch2 peak -0.3 dBFS (clip risk).
   → Reduce reamp output by ~6 dB and rerun this config.
 
-m1_slm_cmm_rmm: sync correlation 0.32 (threshold 0.95).
+m1_sl_cm_rm: sync correlation 0.32 (threshold 0.95).
   → Sync chirp not detected — check ch1 cabling.
 
-m1_lll_cll_rll: wet RMS -89 dBFS, only 5 dB above noise floor.
+m1_sl_cl_rl: wet RMS -89 dBFS, only 5 dB above noise floor.
   → Pedal may be bypassed or SENS is off the grid.
 
-m5_smm_cmm_rmm: round-trip latency drifted to 168 samples (was 91).
+m5_sm_cm_rm: round-trip latency drifted to 168 samples (was 91).
   → Recalibrate before continuing.
 ```
 
@@ -286,9 +286,9 @@ m5_smm_cmm_rmm: round-trip latency drifted to 168 samples (was 91).
 
 ```
 captures/
-  m1_smm_cmm_rmm_input.wav     stimulus echo (1 ch, identical content per pass)
-  m1_smm_cmm_rmm_dryref.wav    pedal OUT1 (1 ch)
-  m1_smm_cmm_rmm_wet.wav       pedal OUT2 (1 ch)
+  m1_sm_cm_rm_input.wav        stimulus echo (1 ch, identical content per pass)
+  m1_sm_cm_rm_dryref.wav       pedal OUT1 (1 ch)
+  m1_sm_cm_rm_wet.wav          pedal OUT2 (1 ch)
   ...
   manifest.csv                 one row per capture
   calibration/                 pre-flight artifacts (Section 5)
@@ -298,10 +298,10 @@ captures/
 
 ```csv
 mode,sens,control,range,prefix,timestamp,rt_latency_samples
-1,M,M,M,m1_smm_cmm_rmm,2026-04-25T18:00:00Z,123
-1,L,M,M,m1_slm_cmm_rmm,2026-04-25T18:06:00Z,123
+1,M,M,M,m1_sm_cm_rm,2026-04-25T18:00:00Z,123
+1,L,M,M,m1_sl_cm_rm,2026-04-25T18:06:00Z,123
 ...
-5,H,H,L,m5_shh_chh_rml,2026-04-25T19:32:00Z,123
+5,H,H,L,m5_sh_ch_rl,2026-04-25T19:32:00Z,123
 ```
 
 ### Resolved engineering choices
