@@ -27,8 +27,14 @@ def cmd_build_stimulus(args: argparse.Namespace) -> int:
 
 
 def cmd_calibrate(args: argparse.Namespace) -> int:
-    print("calibrate: not implemented yet (Task 9)")
-    return 2
+    from calibration import run_preflight
+
+    captures_dir = Path(args.captures)
+    captures_dir.mkdir(parents=True, exist_ok=True)
+    cal = run_preflight(captures_dir=captures_dir, interface_kwargs={})
+    if cal["noise_floor_dbfs"] > -60.0:
+        print(f"WARNING: noise floor {cal['noise_floor_dbfs']} dBFS is high — check cabling.")
+    return 0
 
 
 def cmd_record(args: argparse.Namespace) -> int:
