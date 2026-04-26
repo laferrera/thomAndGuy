@@ -4,3 +4,7 @@ JuceLibraryCode/
 *.xcodeproj/
 *.xcworkspace/
 .remember/tmp/
+scripts/capture/.venv/
+scripts/capture/__pycache__/
+scripts/capture/**/__pycache__/
+scripts/capture/captures/
